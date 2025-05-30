@@ -136,6 +136,7 @@ class HashCached:
     )
     f_serder = field(validator=instance_of(Serder), factory=Serder.pkl_serder)
     calc_stem = field(validator=is_callable(), default=calc_hash_stem)
+    ttl = field(validator=optional(instance_of(datetime.timedelta)), default=None)
 
     def __attrs_post_init__(self):
         if (
@@ -147,9 +148,18 @@ class HashCached:
             self.path_prefix.mkdir(exist_ok=True, parents=True)
             self.f_serder.dump(self.f, self.f_stem_path)
 
+    def is_expired(self, stem_path):
+        path = self.serder.get_path(stem_path)
+        assert path.is_relative_to(self.path_prefix)
+        if self.ttl is not None:
+            delta_seconds = datetime.datetime.now().timestamp() - path.stat().st_mtime
+            return delta_seconds >= self.ttl.total_seconds()
+        else:
+            return False
+
     def __call__(self, *args, **kwargs):
         stem_path = self.calc_stem_path(*args, **kwargs)
-        if self.serder.exists(stem_path):
+        if self.serder.exists(stem_path) and not self.is_expired(stem_path):
             value = self.serder.load(stem_path)
         else:
             value = self.f(*args, **kwargs)
@@ -250,6 +260,10 @@ class HashCachePath:
                 and not hash_cached.args_kwargs_serder.exists(self.stem_path)
             ):
                 raise ValueError
+
+    @property
+    def is_expired(self):
+        return self.hash_cached.is_expired(self.stem_path)
 
     def pipe(self, func, *args, **kwargs):
         return func(self, *args, **kwargs)

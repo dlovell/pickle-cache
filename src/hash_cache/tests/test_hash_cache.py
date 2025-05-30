@@ -1,4 +1,7 @@
+import datetime
 from pathlib import Path
+
+import pytest
 
 from hash_cache.hash_cache import (
     HashCached,
@@ -38,3 +41,29 @@ def test_hash_cache_path(tmpdir):
     (hcp,) = g.gen_hash_cache_paths()
     assert retval == hcp.retval
     assert get_args_kwargs(f, *args, **kwargs) == hcp.args_kwargs
+
+
+@pytest.mark.parametrize(
+    "ttl,should_be_expired",
+    (
+        (datetime.timedelta(milliseconds=1), True),
+        (datetime.timedelta(days=1), False),
+    ),
+)
+def test_ttl(tmpdir, ttl, should_be_expired):
+    g = HashCached(tmpdir, f, ttl=ttl)
+    args = (1, 2, 3)
+    kwargs = {"z": "a"}
+    assert not tuple(g.path_prefix.iterdir())
+    retval = g(*args, **kwargs)
+    assert tuple(g.path_prefix.iterdir())
+    (hcp,) = g.gen_hash_cache_paths()
+    assert retval == hcp.retval
+    assert get_args_kwargs(f, *args, **kwargs) == hcp.args_kwargs
+
+    if should_be_expired:
+        assert hcp.is_expired
+        assert g.is_expired(hcp.stem_path)
+    else:
+        assert not hcp.is_expired
+        assert not g.is_expired(hcp.stem_path)
