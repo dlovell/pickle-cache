@@ -3,10 +3,10 @@ from pathlib import Path
 
 import pytest
 
-from hash_cache.hash_cache import (
+from xorq_hash_cache.hash_cache import (
     HashCached,
 )
-from hash_cache.utils.inspect_utils import (
+from xorq_hash_cache.utils.inspect_utils import (
     get_args_kwargs,
 )
 
