@@ -5,13 +5,13 @@ import types
 import dask.base
 import toolz
 
-from hash_cache.dask_normalize._ctypes import (
+from xorq_hash_cache.dask_normalize._ctypes import (
     get_ctypes_field,
 )
-from hash_cache.dask_normalize.dask_normalize_utils import (
+from xorq_hash_cache.dask_normalize.dask_normalize_utils import (
     normalize_seq_with_caller,
 )
-from hash_cache.utils.inspect_utils import (
+from xorq_hash_cache.utils.inspect_utils import (
     get_partial_arguments,
 )
 

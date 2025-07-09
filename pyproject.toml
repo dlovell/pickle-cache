@@ -1,5 +1,5 @@
 [project]
-name = "hash-cache"
+name = "xorq-hash-cache"
 version = "0.1.0"
 description = "python utility for caching function results"
 readme = "README.md"

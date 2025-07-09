@@ -2,7 +2,7 @@ import dask
 import numpy as np
 import pandas as pd
 
-from hash_cache.dask_normalize.dask_normalize_utils import (
+from xorq_hash_cache.dask_normalize.dask_normalize_utils import (
     normalize_seq_with_caller,
 )
 

@@ -20,7 +20,7 @@ def patch_normalize_token(*typs, f=toolz.functoolz.return_none):
 
 
 def normalize_seq_with_caller(*args, caller=""):
-    from hash_cache.utils.inspect_utils import (
+    from xorq_hash_cache.utils.inspect_utils import (
         get_enclosing_function,
     )
 
