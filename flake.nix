@@ -1,5 +1,5 @@
 {
-  description = "hash-cache flake using uv2nix";
+  description = "xorq-hash-cache flake using uv2nix";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -66,8 +66,8 @@
               (uv2nix_hammer_overrides.overrides pkgs)
             ]
           );
-      virtualenv-all = pythonSet.mkVirtualEnv "hash-cache-env" workspace.deps.all;
-      virtualenv-default = pythonSet.mkVirtualEnv "hash-cache-env" workspace.deps.all;
+      virtualenv-all = pythonSet.mkVirtualEnv "xorq-hash-cache-env" workspace.deps.all;
+      virtualenv-default = pythonSet.mkVirtualEnv "xorq-hash-cache-env" workspace.deps.all;
       impureShell = pkgs.mkShell {
         packages = [
           python
@@ -99,7 +99,7 @@
             lib.composeManyExtensions [
               editableOverlay
               (final: prev: {
-                hash-cache = prev.hash-cache.overrideAttrs (old: {
+                xorq-hash-cache = prev.xorq-hash-cache.overrideAttrs (old: {
                   # It's a good idea to filter the sources going into an editable build
                   # so the editable package doesn't have to be rebuilt on every change.
                   src = lib.fileset.toSource {
@@ -107,7 +107,7 @@
                     fileset = lib.fileset.unions [
                       (old.src + "/pyproject.toml")
                       (old.src + "/README.md")
-                      (old.src + "/src/hash_cache/__init__.py")
+                      (old.src + "/src/xorq_hash_cache/__init__.py")
                     ];
                   };
                   nativeBuildInputs =
@@ -120,7 +120,7 @@
               })
             ]
           );
-          virtualenv = editablePythonSet.mkVirtualEnv "hash-cache-dev-env" workspace.deps.all;
+          virtualenv = editablePythonSet.mkVirtualEnv "xorq-hash-cache-dev-env" workspace.deps.all;
         in
         pkgs.mkShell {
           packages = [
